@@ -12,3 +12,8 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = '__all__'
+
+    def validate_author(self, data):
+        if data == self.context['request'].user:
+            return data
+        raise serializers.ValidationError('You must add your id')
