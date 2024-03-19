@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.shortcuts import reverse
 
 
 class Category(models.Model):
@@ -16,14 +17,14 @@ class Category(models.Model):
 
 
 class Article(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='articles', verbose_name='نویسنده')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True,
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uarticles', verbose_name='نویسنده')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name='carticles',
                                  verbose_name="دسته بندی")
     title = models.CharField(max_length=200, verbose_name='عنوان')
     slug = models.SlugField(max_length=200, unique=True, verbose_name='اسلاگ')
     short_description = models.CharField(max_length=250, verbose_name="توضیحات کوتاه")
     description = models.TextField(verbose_name='توضیحات')
-    image = models.ImageField(upload_to='blog', null=True, verbose_name='تصویر')
+    image = models.ImageField(upload_to='blog', null=True, blank=True, verbose_name='تصویر')
     is_active = models.BooleanField(verbose_name="فعال / غیرفعال")
     updated = models.DateField(auto_now=True, verbose_name='تاریخ بروزرسانی')
     created = models.DateField(auto_now_add=True, verbose_name='تاریخ ساخت')
@@ -34,3 +35,6 @@ class Article(models.Model):
 
     def __str__(self):
         return f'{self.title} {self.updated}'
+
+    def get_absolute_url(self):
+        return reverse('articles:detail', args=[self.id, self.slug])
