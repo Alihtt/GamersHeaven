@@ -30,6 +30,7 @@ class Article(models.Model):
     created = models.DateField(auto_now_add=True, verbose_name='تاریخ ساخت')
 
     class Meta:
+        ordering = ['-created']
         verbose_name = "مقاله"
         verbose_name_plural = "مقالات"
 
@@ -37,4 +38,4 @@ class Article(models.Model):
         return f'{self.title} {self.updated}'
 
     def get_absolute_url(self):
-        return reverse('articles:detail', args=[self.id, self.slug])
+        return reverse('articles:article-detail', args=[self.id, self.slug])
