@@ -9,7 +9,7 @@ class Category(models.Model):
     is_active = models.BooleanField(verbose_name="فعال / غیرفعال", default=True)
 
     def __str__(self):
-        return self.title
+        return f'{self.id}-{self.title}'
 
     class Meta:
         verbose_name = "دسته بندی مقاله"

@@ -5,6 +5,7 @@ from .models import Article
 class ArticleSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField(read_only=True)
     author = serializers.StringRelatedField(read_only=True)
+    category = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Article
