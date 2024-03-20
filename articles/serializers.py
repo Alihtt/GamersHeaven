@@ -3,8 +3,8 @@ from .models import Article
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()
-    url = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField(read_only=True)
+    author = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Article
@@ -13,7 +13,10 @@ class ArticleSerializer(serializers.ModelSerializer):
     def get_url(self, obj):
         return obj.get_absolute_url()
 
-    def validate_author(self, data):
-        if data == self.context['request'].user:
-            return data
-        raise serializers.ValidationError('You must add your id')
+    def create(self, validated_data):
+        author = self.context['request'].user
+        if author.is_staff:
+            article = Article(author=author, **validated_data)
+            article.save()
+            return article
+        raise serializers.ValidationError({'message': 'You must be staff'})
