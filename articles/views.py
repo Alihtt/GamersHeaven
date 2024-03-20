@@ -7,6 +7,12 @@ from permissions import IsOwnerOrReadOnly
 
 
 class ArticleListCreate(ListCreateAPIView):
+    """
+    GET -> List of Articles
+
+    POST -> Create Article
+    """
+
     queryset = Article.objects.filter(is_active=True).all()
     serializer_class = ArticleSerializer
     pagination_class = StandardResultsSetPagination
@@ -14,6 +20,16 @@ class ArticleListCreate(ListCreateAPIView):
 
 
 class ArticleDetail(MultipleFieldLookupMixin, RetrieveUpdateDestroyAPIView):
+    """
+    GET -> Article detail
+
+    PUT -> update Article
+
+    PATCH -> partial update Article
+
+    DELETE -> delete Article
+    """
+
     queryset = Article.objects.filter(is_active=True).all()
     permission_classes = [IsOwnerOrReadOnly]
     serializer_class = ArticleSerializer
