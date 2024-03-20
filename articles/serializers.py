@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Article
+from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.types import OpenApiTypes
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -11,6 +13,7 @@ class ArticleSerializer(serializers.ModelSerializer):
         model = Article
         fields = '__all__'
 
+    @extend_schema_field(OpenApiTypes.STR)
     def get_url(self, obj):
         return obj.get_absolute_url()
 
