@@ -21,8 +21,9 @@ class Category(models.Model):
 
 class Article(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uarticles', verbose_name='نویسنده')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name='carticles',
-                                 verbose_name="دسته بندی")
+    category = models.ManyToManyField(Category, null=True, blank=True,
+                                      related_name='articles',
+                                      verbose_name="دسته بندی")
     title = models.CharField(max_length=200, verbose_name='عنوان')
     slug = models.SlugField(max_length=200, unique=True, verbose_name='اسلاگ')
     short_description = models.CharField(max_length=250, verbose_name="توضیحات کوتاه")

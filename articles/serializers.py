@@ -4,10 +4,29 @@ from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
 
 
+class BaseCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        serializer_related_field = serializers.StringRelatedField()
+        model = Category
+        fields = '__all__'
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    sub_categories = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+    def get_sub_categories(self, obj):
+        categories = obj.categories.all()
+        return BaseCategorySerializer(categories, many=True).data
+
+
 class ArticleSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField(read_only=True)
     author = serializers.StringRelatedField(read_only=True)
-    category = serializers.StringRelatedField(read_only=True)
+    category = BaseCategorySerializer
 
     class Meta:
         model = Article
@@ -24,21 +43,3 @@ class ArticleSerializer(serializers.ModelSerializer):
             article.save()
             return article
         raise serializers.ValidationError({'message': 'You must be staff'})
-
-
-class SubCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = '__all__'
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    sub_categories = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Category
-        fields = '__all__'
-
-    def get_sub_categories(self, obj):
-        categories = obj.categories.all()
-        return SubCategorySerializer(categories, many=True).data
