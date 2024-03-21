@@ -6,6 +6,9 @@ from django.shortcuts import reverse
 class Category(models.Model):
     title = models.CharField(max_length=250, verbose_name="نام دسته بندی")
     url_title = models.CharField(max_length=250, verbose_name="عنوان در url", unique=True)
+    sub_category = models.ForeignKey('self', related_name='categories', verbose_name='زیر مجموعه', null=True,
+                                     blank=True, on_delete=models.CASCADE)
+    is_sub = models.BooleanField(verbose_name="زیر مجموعه / مجموعه", default=False)
     is_active = models.BooleanField(verbose_name="فعال / غیرفعال", default=True)
 
     def __str__(self):

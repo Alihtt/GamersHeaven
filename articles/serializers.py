@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Article
+from .models import Article, Category
 from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
 
@@ -24,3 +24,21 @@ class ArticleSerializer(serializers.ModelSerializer):
             article.save()
             return article
         raise serializers.ValidationError({'message': 'You must be staff'})
+
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    sub_categories = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+    def get_sub_categories(self, obj):
+        categories = obj.categories.all()
+        return SubCategorySerializer(categories, many=True).data
